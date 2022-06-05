@@ -1,6 +1,7 @@
 import numpy as np  
 import matplotlib.pyplot as plt
 import sympy as sm
+
 import time
 
 funcs = {
@@ -88,7 +89,6 @@ def plot(eq, der, inte, consts=None):
 
         plt.title("Graficadora de ecuaciones")
         plt.grid()
-        plt.style.use("dark_background")
 
         plt.plot(x, y_1, label=f"Ecuacion {eq}")
         plt.plot(x, y_2, label=f"Derivada {der}")
@@ -106,23 +106,28 @@ def plot(eq, der, inte, consts=None):
 
 
 
-eq = str(input("Ingresa la funcion a graficar, ex:(x**2+sin(x+2): "))
-var_res = input("Ingresa la variable a derivar/integrar con respecto: ")
-var = sm.symbols(var_res)
 
-der = derivative(eq, var)
-inte = integral(eq, var)
 
 
 if __name__ == "__main__":
     while True:
         print("GRAFICADORA DE ECUACIONES")
+        eq = str(input("Ingresa la funcion a graficar, ex:(x**2+sin(x+2): "))
+        var_res = input("Ingresa la variable a derivar/integrar con respecto: ")
+        var = sm.symbols(var_res)
+
+        der = derivative(eq, var)
+        inte = integral(eq, var)
         print("Ecuacion: ", eq)
         print("Integral:", inte)
         print("Derivada:", der)
-        consts = bool(input("La ecuacion que ingresaste tiene constantes, True/False: "))
-        if consts:
-            values = input("Ingresa las constantes con sus valores, ex:a,3,b,2: ")
-        plot(eq, der, inte, consts)
+        
+        plot(eq, der, inte)
+
+        cont = input("Desea realizar otra grafica? s/n: ")
+        if cont == "s":
+            continue
+        else:
+            break
 
 
