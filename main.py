@@ -13,6 +13,7 @@ funcs = {
     "log":"np.log",
     "pi":"np.pi",
 }
+ 
 
 def replace(eq):
     """Esta funcion busca en el diccionario funcs si se encuentra la llave para hacer uso de los metodos de numpy y realizar las graficas
@@ -39,7 +40,7 @@ def derivative(eq, l):
         str: Retorna le ecuacion derivada
     """
     # a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z = sm.symbols("a b c d e f g h i j k l m n o p q r s t u v w x y z")
-    der = sm.diff(eq, l)
+    der = sm.diff(eq, sm.symbols(l))
     print(der)
     return str(der)
 
@@ -54,7 +55,7 @@ def integral(eq, l):
         str: Retorna le ecuacion integrada
     """
     # a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z = sm.symbols("a b c d e f g h i j k l m n o p q r s t u v w x y z")
-    inte = sm.integrate(eq, l)
+    inte = sm.integrate(eq, sm.symbols(l))
     print(inte)
     return str(inte)
 
@@ -98,8 +99,9 @@ def plot(eq, der, inte, consts=None):
 
         plt.show()
         continuar = False
-    except NameError:
-        print("Ingresaste una ecacion con constantes sin especificar su valor, \nIngresa su valor cuando la graficadora vuelva al inicio.")
+    except Exception as e:
+        # print("Ingresaste una ecacion con constantes sin especificar su valor, \nIngresa su valor cuando la graficadora vuelva al inicio.")
+        print("Ha ocurrido un error")
         time.sleep(10)
 
             
@@ -114,10 +116,10 @@ if __name__ == "__main__":
         print("GRAFICADORA DE ECUACIONES")
         eq = str(input("Ingresa la funcion a graficar, ex:(x**2+sin(x+2): "))
         var_res = input("Ingresa la variable a derivar/integrar con respecto: ")
-        var = sm.symbols(var_res)
+        # var = sm.symbols(var_res)
 
-        der = derivative(eq, var)
-        inte = integral(eq, var)
+        der = derivative(eq, var_res)
+        inte = integral(eq, var_res)
         print("Ecuacion: ", eq)
         print("Integral:", inte)
         print("Derivada:", der)

@@ -1,96 +1,157 @@
-from cgitb import text
 import numpy as np
+import sympy as sm
+from math import *
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
+from matplotlib import style
+import  matplotlib.animation as anim
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-import matplotlib.animation as animation
+
 
 import tkinter as tk
 from tkinter import Label, messagebox
 
-from funcs.math_funcs import funcs
+
+def derivative(eq, l):
+    """Esta funcion calcula la derivada de la ecuacion que el usuario ingreso
+
+    Args:
+        eq (str): Es el input del usuario, el cual hace referencia a la ecuacion para graficar
+        l (str): Es el tipo de variable para realizar la derivada de la ecuacion principal
+
+    Returns:
+        str: Retorna le ecuacion derivada
+    """
+    # a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z = sm.symbols("a b c d e f g h i j k l m n o p q r s t u v w x y z")
+    der = sm.diff(eq, sm.symbols(l))
+    print(der)
+    return str(der)
+
+def integral(eq, l):
+    """Esta funcion calcula la integral de la ecuacion que el usuario ingreso
+
+    Args:
+        eq (str): Es el input del usuario, el cual hace referencia a la ecuacion para graficar
+        l (str): Es el tipo de variable para realizar la derivada de la ecuacion principal
+
+    Returns:
+        str: Retorna le ecuacion integrada
+    """
+    # a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z = sm.symbols("a b c d e f g h i j k l m n o p q r s t u v w x y z")
+    inte = sm.integrate(eq, sm.symbols(l))
+    print(inte)
+    return str(inte)
+
+funcs = {
+    "sin":"np.sin",
+    "cos":"np.cos",
+    "tan":"np.tan",
+    "sqrt":"np.sqrt",
+    "e":"np.exp",
+    "log":"np.log",
+    "pi":"np.pi",
+}
 
 window = tk.Tk()
+fig = Figure()
+ax = fig.add_subplot(111)
+plt.style.use("ggplot")
 
 window.title("GRAFICADOR DE ECUACION CON SU DERIVADA E INTEGRAL")
-window.geometry("900x900")
+window.geometry("600x600")
 
-fig, ax = plt.subplots()
-
-
-label1 = Label(window, text="Ecuacion")
-label1.pack(side=tk.TOP)
-
-label2 = Label(window, text="Limites")
-label2.pack(side=tk.TOP)
-
-user_input = tk.Entry(window, width=100)
-lims = tk.Entry(window, width=50)
-
-user_input.pack(side=tk.TOP)
-lims.pack(side=tk.TOP)
-
-canvas = FigureCanvasTkAgg(fig, window)
-canvas.draw()
-canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=1)
-
-tools = NavigationToolbar2Tk(canvas, window)
+cvs = FigureCanvasTkAgg(fig, window)
+cvs.draw()
+cvs.get_tk_widget().pack(side=tk.BOTTOM)
+tools = NavigationToolbar2Tk(cvs, window)
 tools.update()
+cvs.get_tk_widget().pack(side=tk.TOP)
 
-r1 = False
-r2 = ""
-r3 = ""
+rango1 = False
+rango2 = ""
+rango3 = ""
 
-def re(n):
+
+def replace(eq):
     for i in funcs:
-        if i in n:
-            n = n.replace(i, funcs[i])
-        return n
+        if i in eq:
+            eq = eq.replace(i, funcs[i])
+        return eq
 
-def create(x):
-    if r1:
+
+def calculate_eqs(i):
+    global rango1
+    global rango2
+    if rango1:
         try:
-            min_value = float(r3[0])
-            max_value = float(r3[1])
-            if min_value < max_value:
-                rango = np.linspace(min_value, max_value, 0.1)
-                r2 = [min_value, max_value]
+            min = float(rango3[0])
+            max = float(rango3[1])
+            if min < max:
+                x = np.arange(min , max, 0.01)
+                rango2=[min, max]
             else:
-                r1 = False
-        except Exception as e:
-            messagebox.showwarning("Los limites que ingreso son incorrectos")
-            r1 = False
-            lims.delete(0, len(lims.get()))
-    
-    else :
-        if r2 != "":
-            rango = np.linspace(r2[0], r2[1], 0.1)
+                rango1 = False
+        except:
+            messagebox.showwarning("Error al ingresar los rangos")
+            rango1 = False
+            var.delete(0, len(var.get()))
+    else:
+        if rango2 != "":
+            x = np.arange(rango2[0], rango2[1], 0.01)
         else:
-            x = np.linspace(-5, 5, 0.1)
+            x = np.arange(0, 10, 0.01)
+    
     try:
-        y = eval(data)
-        ax.clear
-        ax.plot(rango, y)
+        y_1 = eval(graph_data)
+        y_2 = eval(graph_data_derivative)
+        y_3 = eval(graph_data_integral)
+        ax.clear()
+        ax.plot(x, y_1, label=f"Ecuacion {graph_data}", color="yellow")
+        ax.plot(x, y_2, label=f"Derivada {graph_data_derivative}", color="purple")
+        ax.plot(x, y_3, label=f"Integral {graph_data_derivative}", color="red")
+
+        ax.legend()
+        
+    
     except Exception as e:
         ax.plot()
-    ax.axhline(0, color="red")
-    ax.axvline(0, color="blue")
+
+    ax.axhline(0, color="red", alpha=0.6)
+    ax.axvline(0, color="blue", alpha=0.6)
     ani.event_source.stop()
 
-def graph():
-    global data, r3, r1
-    ecuation = user_input.get()
-    if lims.get() != "":
-        r = lims.get()
-        r3 = r.split(",")
-        r1 = True
-    data = re(text)
+def plot():
+    global graph_data
+    global graph_data_derivative
+    global graph_data_integral
+    global rango3
+    global rango1
+
+    eq = main_func.get()
+    if var.get() != "":
+        ran = var.get()
+        rango3 = ran.split(",")
+        rango1 = True
+    d_eq = derivative(eq, "x")
+    i_eq = integral(eq, "x")
+    graph_data = replace(eq)
+    graph_data_derivative = replace(d_eq)
+    graph_data_integral = replace(i_eq)
+    print(graph_data)
+    print(f"Derivada: {d_eq}")
+    print(f"Integral: {i_eq}")
     ani.event_source.start()
 
-ani = animation, animation.FuncAnimation(fig, create, interval=1000)
+ani = anim.FuncAnimation(fig, calculate_eqs, interval=1000)
 plt.show()
 
+btn = tk.Button(window, text="Plot", command=plot)
+btn.pack(side=tk.BOTTOM)
 
-submit = tk.Button(window, text="Plot", command="graph")
-submit.pack(side=tk.BOTTOM)
+main_func = tk.Entry(window, width=60)
+main_func.pack(side=tk.TOP)
+
+var = tk.Entry(window, width=20)
+var.pack(side=tk.TOP)
 
 window.mainloop()
