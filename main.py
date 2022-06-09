@@ -59,7 +59,7 @@ def integral(eq, l):
     print(inte)
     return str(inte)
 
-def plot(eq, der, inte, consts=None):
+def plot(eq, der, inte, lims):
     """Esta funcion genera las tres graficas con la ecuacion que ingreso el usuario, su derivada y su integral
 
     Args:
@@ -67,7 +67,7 @@ def plot(eq, der, inte, consts=None):
         der (str): Es la ecuacion derivada
         inte (str): Es la ecuacion integrada
     """
-    x = np.linspace(-10, 10)
+    x = np.linspace(int(lims[0]), int(lims[1]))
 
     for i in funcs:
         if i in eq:
@@ -83,26 +83,22 @@ def plot(eq, der, inte, consts=None):
             inte = inte.replace(i, funcs[i])
             print("Interal transformada: ",inte)
 
-    try:
-        y_1 = eval(eq)
-        y_2 = eval(der)
-        y_3 = eval(inte)
+    
+    y_1 = eval(eq)
+    y_2 = eval(der)
+    y_3 = eval(inte)
 
-        plt.title("Graficadora de ecuaciones")
-        plt.grid()
+    plt.title("Graficadora de ecuaciones")
+    plt.grid()
 
-        plt.plot(x, y_1, label=f"Ecuacion {eq}")
-        plt.plot(x, y_2, label=f"Derivada {der}")
-        plt.plot(x, y_3, label=f"Integral {inte}")
+    plt.plot(x, y_1, label=f"Ecuacion {eq}")
+    plt.plot(x, y_2, label=f"Derivada {der}")
+    plt.plot(x, y_3, label=f"Integral {inte}")
 
-        plt.legend()
+    plt.legend()
 
-        plt.show()
-        continuar = False
-    except Exception as e:
-        # print("Ingresaste una ecacion con constantes sin especificar su valor, \nIngresa su valor cuando la graficadora vuelva al inicio.")
-        print("Ha ocurrido un error")
-        time.sleep(10)
+    plt.show()
+        
 
             
 
@@ -116,7 +112,8 @@ if __name__ == "__main__":
         print("GRAFICADORA DE ECUACIONES")
         eq = str(input("Ingresa la funcion a graficar, ex:(x**2+sin(x+2): "))
         var_res = input("Ingresa la variable a derivar/integrar con respecto: ")
-        # var = sm.symbols(var_res)
+        lims_in = input("Ingresa los limites separados por coma: ")
+        lims = lims_in.split(",")
 
         der = derivative(eq, var_res)
         inte = integral(eq, var_res)
@@ -124,7 +121,7 @@ if __name__ == "__main__":
         print("Integral:", inte)
         print("Derivada:", der)
         
-        plot(eq, der, inte)
+        plot(eq, der, inte, lims)
 
         cont = input("Desea realizar otra grafica? s/n: ")
         if cont == "s":

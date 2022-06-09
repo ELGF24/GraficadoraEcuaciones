@@ -106,9 +106,9 @@ def calculate_eqs(i):
         y_2 = eval(graph_data_derivative)
         y_3 = eval(graph_data_integral)
         ax.clear()
-        ax.plot(x, y_1, label=f"Ecuacion {graph_data}", color="yellow")
+        ax.plot(x, y_1, label=f"Ecuacion {graph_data_derivative}", color="yellow")
         ax.plot(x, y_2, label=f"Derivada {graph_data_derivative}", color="purple")
-        ax.plot(x, y_3, label=f"Integral {graph_data_derivative}", color="red")
+        ax.plot(x, y_3, label=f"Integral {graph_data_integral}", color="red")
 
         ax.legend()
         
